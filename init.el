@@ -376,7 +376,8 @@
   (define-key global-map (kbd "C-c j")
     (lambda () (interactive) (org-capture nil "jj")))
 
-  (efs/org-font-setup))
+  ;;(efs/org-font-setup)
+  )
 ;; prettier org bullets
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
@@ -406,7 +407,13 @@
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("py" . "src python")))
-;;###coding###
+;;###coding, Programming, IDE###
+;;Flycheck check code
+(use-package flycheck
+  :config
+  (global-flycheck-mode)
+  )
+
 ;; lsp mode
 (defun efs/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -455,11 +462,14 @@
   :hook (python-mode . lsp-deferred)
   :custom
   ;; NOTE: Set these if Python 3 is called "python3" on your system!
-  ;; (python-shell-interpreter "python3")
-  ;; (dap-python-executable "python3")
+  (python-shell-interpreter "python3")
+  (dap-python-executable "python3")
   (dap-python-debugger 'debugpy)
+  ;;keybinding to run buffer
+  ;; (local-set-key (kbd("C-c C-c") 'python-shell-send-buffer)) THIS DOESNT WORK!!
   :config
   (require 'dap-python))
+  (evil-define-key 'normal python-mode-map (kbd "z x") 'python-shell-send-buffer)
 ;; python venv
 (use-package pyvenv
   :after python-mode
@@ -606,7 +616,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(evil-undo-system 'undo-tree)
- '(package-selected-packages '(eyebrowse auto-package-update use-package)))
+ '(package-selected-packages '(flycheck eyebrowse auto-package-update use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

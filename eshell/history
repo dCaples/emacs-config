@@ -1,2 +1,26 @@
 ls
 git init
+ipconfig
+ifcfg
+ofconfig
+ifconfig
+ipaddr
+sudo pacman -S ip
+python3 
+ls
+python3 ./server.py
+/proc/sys/netls
+/proc/sys/net
+ls
+/core
+ls
+cd core
+ls
+cat ./somaxconn
+netstat -an
+lsof -i -n
+bb
+ls
+python3 ./sigma.py 
+50
+python3 ./sigma.py 
