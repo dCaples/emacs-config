@@ -1,6 +1,5 @@
 ;;###TODO###
 ;; setup fonts for org mode
-;; popup window manager
 
 
 
@@ -139,6 +138,16 @@
   (evil-collection-init))
 ;;###productivity features###
 
+;;open init.el
+(defun edit-config ()
+  "Open Emacs config."
+  (interactive)
+  (eyebrowse-switch-to-window-config-2)
+  (find-file "~/.emacs.d/init.el")
+  )
+(evil-leader/set-key
+  "f p" 'edit-config
+  )
 ;;smooth scrolling
 (use-package smooth-scrolling
   :config
@@ -151,13 +160,15 @@
 ;; auto revert
 (global-auto-revert-mode 1)
 
+
 ;; undo tree
 (use-package undo-tree
   :config
   (global-undo-tree-mode)
   (setq evil-undo-system "undo-tree")
   (setq undo-tree-save-history t)
-  (define-key evil-normal-state-map (kbd "U") 'undo-tree-visualize)
+  (define-key evil-normal-state-map (kbd "U") 'undo-tree-visualize);; use q to quit tree
+  (add-hook 'undo-tree-visualizer-mode-hook 'undo-tree-custom-keybindings)
   )
 ;; undo tree visualize
 ;; match brackets
@@ -235,6 +246,7 @@
 
 ;;###org mode###
 ;;org mode
+;;
 (defun efs/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
@@ -266,8 +278,13 @@
   (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
 ;; even more org-mode setup
 (defun efs/org-mode-setup ()
+  "Even more 'org-mode' setup."
   (org-indent-mode)
-  (variable-pitch-mode 1)
+  (use-package mixed-pitch
+    :config
+    (add-hook 'org-mode-hook 'mixed-pitch-mode)
+    )
+  ;; (variable-pitch-mode 1)
   (visual-line-mode 1))
 
 (use-package org
@@ -281,10 +298,10 @@
   (setq org-log-done 'time)
   (setq org-log-into-drawer t)
 
-  (setq org-agenda-files
-        '("~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
-          "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
-          "~/Projects/Code/emacs-from-scratch/OrgFiles/Birthdays.org"))
+  ;; (setq org-agenda-files
+  ;;       '("~/Projects/Code/emacs-from-scratch/OrgFiles/Tasks.org"
+  ;;         "~/Projects/Code/emacs-from-scratch/OrgFiles/Habits.org"
+  ;;         "~/Projects/Code/emacs-from-scratch/OrgFiles/Birthdays.org"))
 
   (require 'org-habit)
   (add-to-list 'org-modules 'org-habit)
@@ -398,7 +415,7 @@
 (use-package org-bullets
   :hook (org-mode . org-bullets-mode)
   :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (org-bullets-bullet-list '("∴" "○" "●" "✷")))
 ;; center org buffers
 (defun efs/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
@@ -429,6 +446,13 @@
       :ensure t
       :init
       (setq org-roam-v2-ack t)
+      ;;open file
+      (defun open-org-file ()
+	"Open Emacs config."
+	(interactive)
+	(eyebrowse-switch-to-window-config-3)
+	(org-roam-node-find)
+	)
       :custom
       (org-roam-directory (file-truename "~/org"))
       ;; :bind (("C-c n l" . org-roam-buffer-toggle)
@@ -448,6 +472,9 @@
 	"n r g" 'org-roam-graph
 	"n r i" 'org-roam-node-insert
 	)
+      (evil-leader/set-key
+	"f o" 'open-org-file
+	)
       )
 
 
@@ -459,13 +486,6 @@
 ;;###coding, Programming, IDE###
 
 
-;; minimap with sublimity
-(use-package sublimity
-  :init
-  (require 'sublimity-map)
-  :config
-  (sublimity-mode 1)
-  )
 
 ;;Flycheck check code
 (use-package flycheck
@@ -676,7 +696,7 @@
  ;; If there is more than one, they won't work right.
  '(evil-undo-system 'undo-tree)
  '(package-selected-packages
-   '(sublimity mixed-pitch org-roam flycheck eyebrowse auto-package-update use-package)))
+   '(popwin sublimity mixed-pitch org-roam flycheck eyebrowse auto-package-update use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
