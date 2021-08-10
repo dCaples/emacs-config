@@ -1,3 +1,10 @@
+;;###TODO###
+;; setup fonts for org mode
+;; popup window manager
+
+
+
+
 ;; startup faster
 ;; The default is 800 kilobytes.  Measured in bytes.
 (setq gc-cons-threshold (* 50 1000 1000))
@@ -68,7 +75,7 @@
 (set-face-attribute 'fixed-pitch nil :font "Source Code Pro" :height 120)
 
 ;; Set the variable pitch face
-(set-face-attribute 'variable-pitch nil :font "Roboto" :height 120 :weight 'regular)
+;; (set-face-attribute 'variable-pitch nil :font "SF UI Text" :height 120 :weight 'regular)
 ;; more ui stuff, less basic
 (use-package doom-themes
   :init (load-theme 'doom-one t))
@@ -132,6 +139,15 @@
   (evil-collection-init))
 ;;###productivity features###
 
+;;smooth scrolling
+(use-package smooth-scrolling
+  :config
+  (setq smooth-scrolling-mode 1)
+  (setq smooth-scroll-margin 5)
+  )
+
+;; start emacs as a server, that way I can edit files properly with emacs
+(server-start)
 ;; auto revert
 (global-auto-revert-mode 1)
 
@@ -140,6 +156,7 @@
   :config
   (global-undo-tree-mode)
   (setq evil-undo-system "undo-tree")
+  (setq undo-tree-save-history t)
   (define-key evil-normal-state-map (kbd "U") 'undo-tree-visualize)
   )
 ;; undo tree visualize
@@ -247,7 +264,6 @@
   (set-face-attribute 'org-checkbox nil  :inherit 'fixed-pitch)
   (set-face-attribute 'line-number nil :inherit 'fixed-pitch)
   (set-face-attribute 'line-number-current-line nil :inherit 'fixed-pitch))
-
 ;; even more org-mode setup
 (defun efs/org-mode-setup ()
   (org-indent-mode)
@@ -407,7 +423,50 @@
   (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
   (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
   (add-to-list 'org-structure-template-alist '("py" . "src python")))
+
+;; org-roam
+(use-package org-roam
+      :ensure t
+      :init
+      (setq org-roam-v2-ack t)
+      :custom
+      (org-roam-directory (file-truename "~/org"))
+      ;; :bind (("C-c n l" . org-roam-buffer-toggle)
+      ;;        ("C-c n f" . org-roam-node-find)
+      ;;        ("C-c n g" . org-roam-graph)
+      ;;        ("C-c n i" . org-roam-node-insert)
+      ;;        ("C-c n c" . org-roam-capture)
+      ;;        ;; Dailies
+      ;;        ("C-c n j" . org-roam-dailies-capture-today))
+
+      :config
+      (org-roam-db-autosync-mode)
+
+      (evil-leader/set-key
+	"n r t" 'org-roam-buffer-toggle
+	"n r f" 'org-roam-node-find
+	"n r g" 'org-roam-graph
+	"n r i" 'org-roam-node-insert
+	)
+      )
+
+
+
+
+
+
+
 ;;###coding, Programming, IDE###
+
+
+;; minimap with sublimity
+(use-package sublimity
+  :init
+  (require 'sublimity-map)
+  :config
+  (sublimity-mode 1)
+  )
+
 ;;Flycheck check code
 (use-package flycheck
   :config
@@ -616,7 +675,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(evil-undo-system 'undo-tree)
- '(package-selected-packages '(flycheck eyebrowse auto-package-update use-package)))
+ '(package-selected-packages
+   '(sublimity mixed-pitch org-roam flycheck eyebrowse auto-package-update use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
